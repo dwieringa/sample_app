@@ -86,6 +86,21 @@ describe "Authentication" do
       end
     end
 
+    describe "for signed-in users" do
+      let(:user) { FactoryGirl.create(:user) }
+
+      before { sign_in user, no_capybara: true }
+
+      describe "visiting signup page" do
+        before { get signup_path }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+      describe "posting a CREATE request to the Users#create action" do
+        before { post "/users", user: FactoryGirl.attributes_for(:user) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+    end
+
     describe "as wrong user" do
       let(:user) { FactoryGirl.create(:user) }
       let(:wrong_user) { FactoryGirl.create(:user, email: "wrong@example.com") }
